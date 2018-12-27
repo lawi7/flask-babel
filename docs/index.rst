@@ -21,7 +21,8 @@ or alternatively if you have pip installed::
     $ pip install Flask-Babel
 
 Please note that Flask-Babel requires Jinja 2.5.  If you are using an
-older version you will have to upgrade or disable the Jinja support.
+older version you will have to upgrade or disable the Jinja support 
+(see configuration).
 
 
 Configuration
@@ -37,7 +38,8 @@ object after configuring the application::
     app.config.from_pyfile('mysettings.cfg')
     babel = Babel(app)
 
-The babel object itself can be used to configure the babel support
+To disable jinja support, include ``configure_jinja=False`` in the Babel 
+constructor call.  The babel object itself can be used to configure the babel support
 further.  Babel has the following configuration values that can be used to
 change some internal defaults:
 
@@ -131,6 +133,62 @@ And again with a different language:
 >>> from flask_babel import refresh; refresh()
 >>> format_datetime(datetime(1987, 3, 5, 17, 12), 'EEEE, d. MMMM yyyy H:mm')
 u'Donnerstag, 5. M\xe4rz 1987 17:12'
+
+For more format examples head over to the `babel`_ documentation.
+
+Formatting Numbers
+------------------
+
+To format numbers you can use the :func:`format_number`,
+:func:`format_decimal`, :func:`format_currency`, :func:`format_percent` and :func:`format_scientific`
+functions.
+
+To play with the date formatting from the console, you can use the
+:meth:`~flask.Flask.test_request_context` method:
+
+>>> app.test_request_context().push()
+
+Here are some examples:
+
+>>> from flask_babel import format_number
+>>> format_number(1099)
+'1,099'
+
+>>> from flask_babel import format_decimal
+>>> format_decimal(1.2346)
+u'1.235'
+
+>>> from flask_babel import format_currency
+>>> format_currency(1099.98, 'USD')
+'$1,099.98'
+
+>>> from flask_babel import format_percent
+>>> format_percent(0.34)
+'34%'
+
+>>> from flask_babel import format_scientific
+>>> format_scientific(10000)
+'1E4'
+
+And again with a different language:
+
+>>> app.config['BABEL_DEFAULT_LOCALE'] = 'de'
+>>> from flask_babel import refresh; refresh()
+
+>>> format_number(1099)
+'1.099'
+
+>>> format_decimal(1.2346)
+'1,235'
+
+>>> format_currency(1099.98, 'USD')
+'1.099,98\xa0$'
+
+>>> format_percent(0.34)
+'34\xa0%'
+
+>>> format_scientific(10000)
+'1E4'
 
 For more format examples head over to the `babel`_ documentation.
 
@@ -275,6 +333,19 @@ Datetime Functions
 .. autofunction:: format_time
 
 .. autofunction:: format_timedelta
+
+Number Functions
+``````````````````
+
+.. autofunction:: format_number
+
+.. autofunction:: format_decimal
+
+.. autofunction:: format_currency
+
+.. autofunction:: format_percent
+
+.. autofunction:: format_scientific
 
 Gettext Functions
 `````````````````
